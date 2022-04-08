@@ -1,0 +1,29 @@
+.game-board {
+  --cell-size: 200px;
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr; 
+  
+  margin: auto;
+  width: calc(3*var(--cell-size));
+  height: calc(3*var(--cell-size));
+}
+
+.cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border: 1px solid #000;
+
+  font-family: sans-serif;
+  font-size: var(--cell-size);
+  line-height: 0;
+}
+
+.cell--empty {
+  cursor: pointer;
+}
+.cell--empty:hover {
+  background-color: #ddd;
+}
