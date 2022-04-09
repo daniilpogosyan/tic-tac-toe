@@ -5,9 +5,21 @@ const gameBoard = (function() {
 
   // cache DOM
   const gridCellsEl = [...document.getElementsByClassName('cell')];
+  const gameOutcomeEl = document.getElementById('outcome');
+  const restartEl = document.getElementById('restart');
 
-  function bindEvents() {
-    gridCellsEl.forEach(cell => cell.addEventListener('click', playTurn));
+
+  function _reactivateCell(cell) {
+    _deactivateCell(cell);
+    cell.addEventListener('click', playTurn);
+    cell.classList.add('cell--empty');
+  }
+  function _deactivateCell(cell) {
+    cell.removeEventListener('click', playTurn);
+    cell.classList.remove('cell--empty');
+  }
+  function _updateGrid(callback) {
+    gridCellsEl.forEach(cell => callback(cell));
   }
 
 
@@ -36,8 +48,8 @@ const gameBoard = (function() {
   function clearBoard() {
     for (let i = 0; i < 9; i++) {
       _setCellChar('', i);
-      gridCellsEl.forEach(cell => cell.classList.add('cell--empty'));
     }
+    _updateGrid(_reactivateCell);
     _render();
   }
 
@@ -75,28 +87,34 @@ const gameBoard = (function() {
 
   // check if game is over
   function _checkBoard() {
-    if (_checkLineCrossed())
-      alert(`${gameFlow.getCurMarker()} is a winner`);
-    else if (!board.includes(''))
-      alert('draw');
+    if (_checkLineCrossed()) {
+      gameOutcomeEl.textContent = `${gameFlow.getCurMarker()} is a winner`;
+      _updateGrid(_deactivateCell);
+    }
+    else if (!board.includes('')) {
+      gameOutcomeEl.textContent = `Draw`;
+      _updateGrid(_deactivateCell);
+    }
   }
 
   function playTurn(e) {
     if (!putMarker(gameFlow.getCurMarker(), e.target.dataset.index))
       return;
 
-    e.target.removeEventListener('click', playTurn);
-    e.target.classList.remove('cell--empty');
+    _deactivateCell(e.target);
     _render();
     _checkBoard();
     gameFlow.changePlayer();
   }
 
 
+  // grid initialization
   clearBoard();
-  bindEvents();
-
-  return {clearBoard};
+  gridCellsEl.forEach(cell => _reactivateCell(cell));
+  restartEl.addEventListener('click', () => {
+    clearBoard();
+    gameOutcomeEl.textContent = '';
+  });
 })();
 
 const gameFlow = (function() {

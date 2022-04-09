@@ -27,3 +27,19 @@
 .cell--empty:hover {
   background-color: #ddd;
 }
+
+.game-outcome {
+  font-size: 100px;
+  text-align: center;
+}
+
+.restart-btn {
+  display: block;
+
+  margin: auto;
+  margin-top: 50px;
+  padding: 50px 100px;
+  border-radius: 10px;
+
+  font-size: 50px;
+}
